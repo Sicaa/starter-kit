@@ -1,0 +1,19 @@
+{
+	"name": "starter-kit",
+	"type": "project",
+	"description": "PHP MVC micro framework fitting any new project",
+	"authors": [{"name": "Sicaa", "email": "jes@sicaa.net"}],
+	"license": "MIT",
+	"config": {
+		"vendor-dir": "./Vendor/"
+	},
+	"require": {
+		"php": ">=5.4",
+		"ext-PDO": "*",
+		"starter-kit/orm": "^1.0",
+		"twig/twig": "^1.22"
+	},
+	"autoload": {
+        "psr-4": {"Controller\\": "Controller/"}
+    }
+}
