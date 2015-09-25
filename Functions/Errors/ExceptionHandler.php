@@ -43,8 +43,15 @@ function exceptionHandler(\Exception $e)
 		$log .= '$_REQUEST = '."\n";
 		$log .= print_r($_REQUEST, true);
 
-		$logFilePath = dirname(__FILE__).'/../../Logs/error.log';
+		$logFolderPath = dirname(__FILE__).'/../../'.ERROR_NOTIFICATION_LOG_DIR;
+		$logFilePath = $logFolderPath.'/error.log';
 		clearstatcache();
+
+		if (!file_exists($logFolderPath)) {
+			mkdir($logFolderPath);
+			chmod($logFolderPath, 0777);
+		}
+
 		if (file_exists($logFilePath) && filesize($logFilePath) > 524288000) // 500Mo
 			unlink($logFilePath);
 		error_log($log, 3, $logFilePath);

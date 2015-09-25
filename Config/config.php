@@ -15,6 +15,8 @@ $config = array(
 	'ERROR_NOTIFICATION_LOG' => true,
 	'ERROR_NOTIFICATION_MAIL' => true,
 
+	'ERROR_NOTIFICATION_LOG_DIR' => 'Logs',
+
 	'ADMIN_MAIL' => 'email@domain.com',
 
 	// Used to properly route requests
