@@ -13,7 +13,8 @@ $config = array(
 	'ERROR_NOTIFICATION_LOG' => true,
 	'ERROR_NOTIFICATION_MAIL' => true,
 
-	'ERROR_NOTIFICATION_LOG_DIR' => 'Logs',
+	// Default log directory set to /tmp in Unix env
+	'ERROR_NOTIFICATION_LOG_DIR' => sys_get_temp_dir(),
 
 	'ADMIN_MAIL' => 'email@domain.com',
 
