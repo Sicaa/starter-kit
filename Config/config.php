@@ -7,8 +7,6 @@
 * configuration file in production to allow more security.
 */
 
-date_default_timezone_set('Europe/Paris');
-
 $config = array(
 	// Error handling
 	'ERROR_NOTIFICATION_DISPLAY' => false,
