@@ -49,11 +49,11 @@ class FrontController {
 		$route = $this->router->route($this->request, $this->response);
 		$redirect = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 
-		// https redirection
+		// Https redirection
 		if ($route->isHttpsRequired() && $_SERVER['SERVER_NAME'] != 'localhost' && $_SERVER['SERVER_PORT'] != 443) {
 			$redirect = 'https://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-			$this->response->addHeader('HTTP/1.1 Status: 301 Moved Permanently');
-			$this->response->addHeader("Location: $redirect")->send();
+			$this->response->addHeader('HTTP/1.1 301 Moved Permanently');
+			$this->response->addHeader('Location: '.$redirect)->send();
 			exit;
 		}
 
