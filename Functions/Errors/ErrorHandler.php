@@ -6,6 +6,7 @@ function errorHandler($errno, $errstr, $errfile, $errline, $errcontext = NULL)
 {
 	$errortype = array(
 		E_ERROR             => 'E_ERROR',
+		E_PARSE             => 'E_PARSE',
 		E_WARNING           => 'E_WARNING',
 		E_NOTICE            => 'E_NOTICE',
 		E_USER_ERROR        => 'E_USER_ERROR',
