@@ -15,3 +15,5 @@ require_once 'Vendor/autoload.php';
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
 }
+
+StarterKit\ORM\SimpleORM::setCachingRules(MEMCACHED_HOST, MEMCACHED_PORT, MEMCACHED_PREFIX, MEMCACHED_EXPIRE);
