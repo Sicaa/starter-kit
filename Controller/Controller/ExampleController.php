@@ -12,12 +12,12 @@ class ExampleController extends IndexController
 {
 	public function helloWorldAction()
 	{
-		return $this->twig->render('example/hello-world.html.twig');
+		return $this->render('example/hello-world.html.twig');
 	}
 
 	public function helloAnyoneAction()
 	{
-		return $this->twig->render('example/hello-anyone.html.twig', array(
+		return $this->render('example/hello-anyone.html.twig', array(
 			'name' => $this->request->getParam('anyone')
 		));
 	}

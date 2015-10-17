@@ -34,8 +34,8 @@ $config = array(
 	'DB_USER' => 'root',
 	'DB_PWD' => '',
 
-	// Twig
-	'TWIG_VIEWS_DIR' => 'Views'
+	// Views path
+	'VIEWS_DIR' => 'Views'
 );
 
 if (file_exists(__DIR__.'/config.php.local')) {

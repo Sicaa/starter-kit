@@ -9,7 +9,7 @@ class IndexController
 	protected $request;
 	protected $response;
 
-	protected $twig;
+	protected $templateEngine;
 	protected $auth;
 
 	public function __construct(Core\Route $route_, Core\Router $router_, Core\Request $request_, Core\Response $response_, $auth_)
@@ -20,19 +20,19 @@ class IndexController
 		$this->response = $response_;
 		$this->auth		= $auth_;
 
-		$loader = new \Twig_Loader_Filesystem(TWIG_VIEWS_DIR);
-		$this->twig = new \Twig_Environment($loader, array(
+		$loader = new \Twig_Loader_Filesystem(VIEWS_DIR);
+		$this->templateEngine = new \Twig_Environment($loader, array(
 			// Prod only
-			// 'cache' => TWIG_VIEWS_DIR.'/cache',
+			// 'cache' => VIEWS_DIR.'/cache',
 		));
 
 		// Use it to load content (CSS, JS, etc.) with a relative path
-		$this->twig->addGlobal('R', $this->request->getRelativePath());
+		$this->templateEngine->addGlobal('R', $this->request->getRelativePath());
 		
 		$pathFunction = new \Twig_SimpleFunction('path', function($routeName_) {
 			return $this->generateUrl($routeName_);
 		});
-		$this->twig->addFunction($pathFunction);
+		$this->templateEngine->addFunction($pathFunction);
 	}
 
 	public function generateUrl($routeName_)
@@ -52,7 +52,7 @@ class IndexController
 
 				// Unauthorized
 				$this->response->addHeader('HTTP/1.1 403 Forbidden')->send();
-				echo $this->twig->render('./errors/403.html.twig', array());
+				echo $this->render('./errors/403.html.twig', array());
 				exit;
 			}
 		}
@@ -62,7 +62,7 @@ class IndexController
 	public function error404Action()
 	{
 		$this->response->addHeader($_SERVER['SERVER_PROTOCOL'].' 404 Not Found')->send();
-		echo $this->twig->render('./errors/404.html.twig', array());
+		echo $this->render('./errors/404.html.twig', array());
 		exit;
 	}
 
@@ -71,5 +71,10 @@ class IndexController
 		$this->response->addHeader('Location: '.$this->generateUrl($routeName_));
 		$this->response->send();
 		exit;
+	}
+
+	protected function render($templatePath_, array $params_ = array())
+	{
+		return $this->templateEngine->render($templatePath_, $params_);
 	}
 }
