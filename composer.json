@@ -9,7 +9,6 @@
 	},
 	"require": {
 		"php": ">=5.4",
-		"ext-PDO": "*",
 		"starter-kit/orm": "^1.0",
 		"twig/twig": "^1.22"
 	},
