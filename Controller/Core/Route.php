@@ -13,23 +13,35 @@ class Route {
 	const DEFAULT_ACTION     = 'index';
 	const SEPARATORS         = '/,;.:-_~+*=@|';
 	const REGEX_DELIMITER    = '#';
-	
-	protected $controllerClass = self::DEFAULT_CONTROLLER;
-	protected $action          = self::DEFAULT_ACTION;
-	
+
+	protected $pathName; // Route name
+	protected $path; // URL pattern to match
+	protected $pathVariables = array(); // Array of variables name defined in path
+
+	protected $controllerClass = self::DEFAULT_CONTROLLER; // Controller class handling the route action
+	protected $action          = self::DEFAULT_ACTION; // Controller's method handling the route action
+
 	protected $httpsRequired   = false;
 	protected $authRequired    = false;
 	protected $permissions     = array();
- 
+
 	public function __construct($pathName_, $path_, $controllerClass_, $action_, $httpsRequired_ = false, $authRequired_ = false, $permissions_ = array()) 
 	{
 		$this->pathName        = $pathName_;
 		$this->path            = $path_;
+
 		$this->controllerClass = $controllerClass_;
 		$this->action          = $action_;
+
 		$this->httpsRequired   = $httpsRequired_;
 		$this->authRequired    = $authRequired_;
 		$this->permissions     = $permissions_;
+
+		$temp = array();
+		preg_match_all('#\{\w+\}#', $this->path, $temp);
+		if (is_array($temp) && !empty($temp)) {
+			$this->pathVariables = $temp[0];
+		}
 	}
 
 	public function getAction()
@@ -45,6 +57,11 @@ class Route {
 	public function getPathName()
 	{
 		return $this->pathName;
+	}
+
+	public function getPathVariables()
+	{
+		return $this->pathVariables;
 	}
 
 	public function getPermissions()

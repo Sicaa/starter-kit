@@ -29,15 +29,15 @@ class IndexController
 		// Use it to load content (CSS, JS, etc.) with a relative path
 		$this->templateEngine->addGlobal('R', $this->request->getRelativePath());
 		
-		$pathFunction = new \Twig_SimpleFunction('path', function($routeName_) {
-			return $this->generateUrl($routeName_);
+		$pathFunction = new \Twig_SimpleFunction('path', function($routeName_, $params_ = array()) {
+			return $this->generateUrl($routeName_, $params_);
 		});
 		$this->templateEngine->addFunction($pathFunction);
 	}
 
-	public function generateUrl($routeName_)
+	public function generateUrl($routeName_, $params_)
 	{
-		return $this->router->path($routeName_);
+		return $this->router->path($routeName_, $params_);
 	}
 
 	public function checkPermissions()

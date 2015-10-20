@@ -61,11 +61,42 @@ class Router {
 	* Return the matched route path
 	* @return string $route
 	*/
-	public function path($testedPathName_) 
+	public function path($testedPathName_, array $urlParams_ = array())
 	{
 		foreach ($this->routes as $pathName => $route) {
 			if ($testedPathName_ == $pathName) {
-				return $this->getBasePath().$route->getPath();
+				$path = $route->getPath();
+				$paramsToFill = $route->getPathVariables();
+
+				if (!empty($paramsToFill)) { // There is some mandatory params to fill in the URL path
+					if (empty($urlParams_)) { // Missing parameters
+						throw new \Exception(sprintf('Route pattern %s needs some mandatory parameters to be correctly constructed', $path));
+					}
+
+					foreach ($paramsToFill as $k => $v) {
+						$name = substr($v, 1, -1); // Removing brackets
+
+						if (!array_key_exists($name, $urlParams_)) {
+							throw new \Exception(sprintf('Route pattern %s needs "%s" parameter defined to be correctly constructed', $path, $name));
+						}
+
+						$path = str_replace($v, $urlParams_[$name], $path);
+						unset($urlParams_[$name]);
+					}
+				}
+
+				if (!empty($urlParams_)) { // Add simple query string to the path for the rest of parameters given
+					$supUrl = '?';
+					$i = 0;
+					foreach ($urlParams_ as $k => $v) {
+						$supUrl .= ($i > 0) ? '&' : '';
+						$supUrl .= $k.'='.$v;
+						$i++;
+					}
+					$path .= $supUrl;
+				}
+
+				return $this->getBasePath().$path;
 			}
 		}
 		throw new \OutOfRangeException('No route matched the given path.');
