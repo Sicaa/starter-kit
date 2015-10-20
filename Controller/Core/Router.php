@@ -86,14 +86,7 @@ class Router {
 				}
 
 				if (!empty($urlParams_)) { // Add simple query string to the path for the rest of parameters given
-					$supUrl = '?';
-					$i = 0;
-					foreach ($urlParams_ as $k => $v) {
-						$supUrl .= ($i > 0) ? '&' : '';
-						$supUrl .= $k.'='.$v;
-						$i++;
-					}
-					$path .= $supUrl;
+					$path .= '?'.http_build_query($urlParams_);
 				}
 
 				return $this->getBasePath().$path;
