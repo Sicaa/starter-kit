@@ -11,7 +11,7 @@ function exceptionHandler(\Exception $e)
 	if (ERROR_NOTIFICATION_DISPLAY === true) {
 		$message = '<div style="text-align:left;padding:10px;border:1px solid #000;background-color:#FFB6B6;">';
 		$message .= '<strong>'.get_class($e).'</strong><br>';
-		$message .= $e->getMessage().'<br>';
+		$message .= '('.$e->getCode().') '.$e->getMessage().'<br>';
 		$message .= '<strong>in '.$e->getFile().':'.$e->getLine().'</strong>';
 		$message .= '<pre>'.print_r(debug_backtrace(), true).'</pre></div>';
 		echo $message;
@@ -20,7 +20,7 @@ function exceptionHandler(\Exception $e)
 	if (ERROR_NOTIFICATION_MAIL === true) {
 		$message = date('r')."\n";
 		$message .= get_class($e)."\n";
-		$message .= $e->getMessage()."\n";
+		$message .= '('.$e->getCode().') '.$e->getMessage()."\n";
 		$message .= 'in '.$e->getFile().':'.$e->getLine()."\n";
 		$message .= '$_REQUEST = '."\n";
 		$message .= print_r($_REQUEST, true);
@@ -34,7 +34,7 @@ function exceptionHandler(\Exception $e)
 		$log = '---------------------------------------------------'."\n";
 		$log .= date('r')."\n";
 		$log .= get_class($e)."\n";
-		$log .= $e->getMessage()."\n";
+		$log .= '('.$e->getCode().') '.$e->getMessage()."\n";
 		$log .= 'in '.$e->getFile().':'.$e->getLine()."\n";
 
 		if (isset($_SERVER['HTTP_REFERER']))
