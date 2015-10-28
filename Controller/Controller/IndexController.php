@@ -35,7 +35,7 @@ class IndexController
 		$this->templateEngine->addFunction($pathFunction);
 	}
 
-	public function generateUrl($routeName_, $params_)
+	public function generateUrl($routeName_, $params_ = array())
 	{
 		return $this->router->path($routeName_, $params_);
 	}
