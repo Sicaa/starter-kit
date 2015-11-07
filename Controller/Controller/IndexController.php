@@ -87,9 +87,9 @@ class IndexController
 		exit;
 	}
 
-	public function redirect($routeName_)
+	public function redirect($routeName_, array $params_ = array())
 	{
-		$this->response->addHeader('Location: '.$this->generateUrl($routeName_));
+		$this->response->addHeader('Location: '.$this->generateUrl($routeName_, $params_));
 		$this->response->send();
 		exit;
 	}
