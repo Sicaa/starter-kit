@@ -26,6 +26,7 @@ class IndexController
 				$this->templateEngine->setTemplateDir(VIEWS_DIR);
 				$this->templateEngine->setCompileDir(sys_get_temp_dir());
 				$this->templateEngine->assign('R', $this->request->getRelativePath());
+				$this->templateEngine->registerPlugin('function', 'path', array($this, 'generateSmartyUrl'));
 				break;
 			case 'twig':
 			default:
@@ -46,9 +47,18 @@ class IndexController
 		}
 	}
 
-	public function generateUrl($routeName_, $params_ = array())
+	public function generateUrl($routeName_, array $params_ = array())
 	{
 		return $this->router->path($routeName_, $params_);
+	}
+
+	/**
+	* Dirty hack to fit Smarty rules...
+	* Usage: {path route='routeName', param1='yourParam', param2='yourParam',...}
+	*/
+	public function generateSmartyUrl(array $params_ = array())
+	{
+		return $this->router->path(array_shift($params_), $params_);
 	}
 
 	public function checkPermissions()
