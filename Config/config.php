@@ -10,7 +10,7 @@
 $config = array(
 	// Error handling
 	'ERROR_NOTIFICATION_DISPLAY' => false,
-	'ERROR_NOTIFICATION_LOG' => true,
+	'ERROR_NOTIFICATION_LOG' => false,
 	'ERROR_NOTIFICATION_MAIL' => true,
 
 	// Default log directory set to /tmp in Unix env
@@ -32,6 +32,7 @@ $config = array(
 	// Database info
 	'DB_SERVER' => 'localhost',
 	'DB_USER' => 'root',
+	'DB_NAME' => 'starter-kit',
 	'DB_PWD' => '',
 
 	// Template engine

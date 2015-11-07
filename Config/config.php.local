@@ -9,14 +9,5 @@ $config['ERROR_NOTIFICATION_DISPLAY'] = true;
 $config['ERROR_NOTIFICATION_LOG'] = true;
 $config['ERROR_NOTIFICATION_MAIL'] = false;
 
-$config['BASE_URL'] = 'http://localhost';
+$config['BASE_URL'] = 'localhost';
 $config['ROOT_URL'] = '/starter-kit/';
-
-$config['CACHING'] = true;
-$config['MEMCACHED_HOST'] = 'localhost';
-$config['MEMCACHED_PORT'] = 11211;
-$config['MEMCACHED_EXPIRE'] = 300;
-
-$config['DB_SERVER'] = 'localhost';
-$config['DB_USER'] = 'root';
-$config['DB_PWD'] = '';
