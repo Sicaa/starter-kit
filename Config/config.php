@@ -34,6 +34,9 @@ $config = array(
 	'DB_USER' => 'root',
 	'DB_PWD' => '',
 
+	// Template engine
+	'TEMPLATE_ENGINE' => 'twig',
+
 	// Views path
 	'VIEWS_DIR' => 'Views'
 );

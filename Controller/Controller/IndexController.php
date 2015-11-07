@@ -20,19 +20,29 @@ class IndexController
 		$this->response = $response_;
 		$this->auth		= $auth_;
 
-		$loader = new \Twig_Loader_Filesystem(VIEWS_DIR);
-		$this->templateEngine = new \Twig_Environment($loader, array(
-			// Prod only
-			// 'cache' => VIEWS_DIR.'/cache',
-		));
+		switch (TEMPLATE_ENGINE) {
+			case 'smarty':
+				$this->templateEngine = new \Smarty();
+				$this->templateEngine->setTemplateDir(VIEWS_DIR);
+				$this->templateEngine->setCompileDir(sys_get_temp_dir());
+				$this->templateEngine->assign('R', $this->request->getRelativePath());
+			case 'twig':
+			default:
+				$loader = new \Twig_Loader_Filesystem(VIEWS_DIR);
+				$this->templateEngine = new \Twig_Environment($loader, array(
+					// Prod only
+					// 'cache' => VIEWS_DIR.'/cache',
+				));
 
-		// Use it to load content (CSS, JS, etc.) with a relative path
-		$this->templateEngine->addGlobal('R', $this->request->getRelativePath());
-		
-		$pathFunction = new \Twig_SimpleFunction('path', function($routeName_, $params_ = array()) {
-			return $this->generateUrl($routeName_, $params_);
-		});
-		$this->templateEngine->addFunction($pathFunction);
+				// Use it to load content (CSS, JS, etc.) with a relative path
+				$this->templateEngine->addGlobal('R', $this->request->getRelativePath());
+
+				$pathFunction = new \Twig_SimpleFunction('path', function($routeName_, $params_ = array()) {
+					return $this->generateUrl($routeName_, $params_);
+				});
+				$this->templateEngine->addFunction($pathFunction);
+				break;
+		}
 	}
 
 	public function generateUrl($routeName_, $params_ = array())
@@ -75,6 +85,14 @@ class IndexController
 
 	protected function render($templatePath_, array $params_ = array())
 	{
-		return $this->templateEngine->render($templatePath_, $params_);
+		switch (TEMPLATE_ENGINE) {
+			case 'smarty':
+				return $this->templateEngine->display($templatePath_);
+				break;
+			case 'twig':
+			default:
+				return $this->templateEngine->render($templatePath_, $params_);
+				break;
+		}
 	}
 }
