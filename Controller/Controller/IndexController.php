@@ -26,6 +26,7 @@ class IndexController
 				$this->templateEngine->setTemplateDir(VIEWS_DIR);
 				$this->templateEngine->setCompileDir(sys_get_temp_dir());
 				$this->templateEngine->assign('R', $this->request->getRelativePath());
+				break;
 			case 'twig':
 			default:
 				$loader = new \Twig_Loader_Filesystem(VIEWS_DIR);
