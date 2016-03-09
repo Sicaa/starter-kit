@@ -1,0 +1,150 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__.'/../Vendor/autoload.php';
+
+echo PHP_EOL;
+write('Starter-Kit Update Checker', 'yellow');
+
+if (!is_writable(__DIR__)) {
+	write('Error: "/App" directory must be writeable. Check your permissions.', 'error');
+	exit;
+}
+
+write('Fetching repo from Github...');
+
+$repo = \Phyrexia\Http\Client::get('https://api.github.com/repos/Sicaa/starter-kit/zipball/master', NULL, array(CURLOPT_HTTPHEADER => array(
+	'Accept: application/vnd.github.v3.raw+json',
+	'User-Agent: Sicaa',
+)));
+
+if ($repo->getStatusCode() != 200) {
+	write('Error: archive not found.', 'error');
+	exit;
+}
+
+$zipPath = __DIR__.'/temp.zip';
+file_put_contents($zipPath, $repo->getRawBody());
+$zipHash = hash_file('sha512', $zipPath);
+
+write('Checking for updates...');
+
+if (file_exists(__DIR__.'/.lock') && file_get_contents(__DIR__.'/.lock') === $zipHash) {
+	write('Your Starter-Kit is up to date :)', 'green');
+	unlink($zipPath);
+	exit;
+}
+
+write('Your Starter-Kit framework needs an update. Continue ? (y/n)');
+
+$handle = fopen('php://stdin', 'r');
+$line = fgets($handle);
+if (!in_array(trim($line), array('y', 'yes', 'o', 'oui'))) {
+	write('Update aborted.');
+	unlink($zipPath);
+	exit;
+}
+fclose($handle);
+
+write('Extracting zip file...');
+
+$zip = new \ZipArchive;
+if ($zip->open($zipPath) !== true) {
+	write('Error: error while extracting zip file.', 'error');
+	unlink($zipPath);
+	exit;
+}
+
+$tempPath = __DIR__.'/temp/';
+$zip->extractTo($tempPath);
+$zip->close();
+unlink($zipPath);
+
+$filesToExclude = array(
+	'/Config/config.php',
+	'/Config/config.php.local',
+	'/Config/routing.php',
+);
+
+write('This files will not be replaced: '.PHP_EOL.'- '.implode(PHP_EOL.'- ', $filesToExclude));
+write('Replacing files (old files will be renamed with a .old extension, letting you merge your custom additions)...');
+
+$dh = opendir($tempPath);
+$tempDirname = NULL;
+while (($file = readdir($dh)) !== false) {
+	if ($file !== '.' && $file !== '..' && is_dir($tempPath.$file)) {
+		$tempDirname = $file;
+		break;
+	}
+}
+
+if (is_null($tempDirname)) {
+	write('Error: error while parsing extracted zip file.', 'error');
+	exit;
+}
+
+$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__.'/temp', RecursiveIteratorIterator::SELF_FIRST));
+$it->rewind();
+while ($it->valid()) {
+	if (!$it->isDot()) {
+		$pathToCheck = __DIR__.'/..';
+		$localFilesPath = str_replace($tempDirname, '', $it->getSubPathName());
+		$fileToCheck = $pathToCheck.$localFilesPath;
+		if (!in_array($localFilesPath, $filesToExclude)) {
+			if (file_exists($fileToCheck)) {
+				// Tested file already exists and possibly needs to be updated
+				if (filesize($fileToCheck) != filesize($it->key()) && hash_file('sha512', $fileToCheck) != hash_file('sha512', $it->key())) {
+					// Tested file needs to be updated
+					rename($fileToCheck, $fileToCheck.'.old');
+					file_put_contents($fileToCheck, file_get_contents($it->key()));
+					write('- '.$localFilesPath.' have been updated', 'yellow');
+				} else {
+					// Tested file is up to date
+					write('- '.$localFilesPath.' is up to date', 'green');
+				}
+			} else {
+				// Tested file needs to be created
+				file_put_contents($fileToCheck, file_get_contents($it->key()));
+				write('- '.$localFilesPath.' have been created', 'yellow');
+			}
+		}
+	}
+	$it->next();
+}
+
+$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__.'/temp', RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::CHILD_FIRST);
+$it->rewind();
+while ($it->valid()) {
+	if ($it->isDir()){
+		rmdir($it->getRealPath());
+	} else {
+		unlink($it->getRealPath());
+	}
+	$it->next();
+}
+rmdir(__DIR__.'/temp');
+
+file_put_contents(__DIR__.'/.lock', $zipHash);
+
+echo PHP_EOL;
+write('Your Starter-Kit have been successfully updated :)', 'green');
+write('All you need to do now is to check your .old files, merge them if necesary and remove them.', 'green');
+
+function write($msg, $style = NULL, $lineSize = 70)
+{
+	$colorSupport = (DIRECTORY_SEPARATOR == '\\') ? (false !== getenv('ANSICON') || 'ON' === getenv('ConEmuANSI')) : (function_exists('posix_isatty') && posix_isatty(1));
+
+	// ANSI color codes
+	$styles = array(
+		'reset' => "\033[0m",
+		'red' => "\033[31m",
+		'green' => "\033[32m",
+		'yellow' => "\033[33m",
+		'error' => "\033[37;41m",
+	);
+
+	$toWrite = wordwrap(trim($msg), $lineSize, PHP_EOL).PHP_EOL;
+
+	echo ((!is_null($style) && $colorSupport) ? $styles[$style] : '').$toWrite.((!is_null($style) && $colorSupport) ? $styles['reset'] : '');
+	return;
+}

@@ -10,7 +10,8 @@
 	"require": {
 		"php": ">=5.4",
 		"starter-kit/orm": "^1.0",
-		"twig/twig": "^1.22"
+		"twig/twig": "^1.22",
+		"phyrexia/http": "^2.4"
 	},
 	"autoload": {
         "psr-4": {"Controller\\": "Controller/"}
