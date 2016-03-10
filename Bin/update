@@ -30,7 +30,7 @@ $zipHash = hash_file('sha512', $zipPath);
 write('Checking for updates...');
 
 if (file_exists(__DIR__.'/update.lock') && file_get_contents(__DIR__.'/update.lock') === $zipHash) {
-	write('Your Starter-Kit is up to date :)', 'green');
+	write('Your Starter-Kit is up-to-date :)', 'green');
 	unlink($zipPath);
 	exit;
 }
@@ -83,29 +83,35 @@ if (is_null($tempDirname)) {
 	exit;
 }
 
+$updateWarning = false;
 $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__.'/temp', RecursiveIteratorIterator::SELF_FIRST));
 $it->rewind();
 while ($it->valid()) {
 	if (!$it->isDot()) {
 		$pathToCheck = __DIR__.'/..';
-		$localFilesPath = str_replace($tempDirname, '', $it->getSubPathName());
-		$fileToCheck = $pathToCheck.$localFilesPath;
-		if (!in_array($localFilesPath, $filesToExclude)) {
+		$localFilePath = str_replace($tempDirname, '', $it->getSubPathName());
+		$fileToCheck = $pathToCheck.$localFilePath;
+		if (!in_array($localFilePath, $filesToExclude)) {
 			if (file_exists($fileToCheck)) {
 				// Tested file already exists and possibly needs to be updated
 				if (filesize($fileToCheck) != filesize($it->key()) && hash_file('sha512', $fileToCheck) != hash_file('sha512', $it->key())) {
 					// Tested file needs to be updated
 					rename($fileToCheck, $fileToCheck.'.old');
 					file_put_contents($fileToCheck, file_get_contents($it->key()));
-					write('- '.$localFilesPath.' have been updated', 'yellow');
+
+					if ($localFilePath == '/'.$_SERVER['PHP_SELF']) {
+						$updateWarning = true;
+					}
+
+					write('- '.$localFilePath.' has been updated', 'yellow');
 				} else {
-					// Tested file is up to date
-					write('- '.$localFilesPath.' is up to date', 'green');
+					// Tested file is up-to-date
+					write('- '.$localFilePath.' is up-to-date', 'green');
 				}
 			} else {
 				// Tested file needs to be created
 				file_put_contents($fileToCheck, file_get_contents($it->key()));
-				write('- '.$localFilesPath.' have been created', 'yellow');
+				write('- '.$localFilePath.' has been created', 'yellow');
 			}
 		}
 	}
@@ -127,8 +133,12 @@ rmdir(__DIR__.'/temp');
 file_put_contents(__DIR__.'/update.lock', $zipHash);
 
 echo PHP_EOL;
-write('Your Starter-Kit have been successfully updated :)', 'green');
+write('Your Starter-Kit has been successfully updated :)', 'green');
 write('All you need to do now is to check your .old files, merge them if necesary and remove them.', 'green');
+
+if ($updateWarning) {
+	write('Warning: this update script has been updated. Please execute it again to be sure you\'re definitely up-to-date.', 'yellow');
+}
 
 function write($msg, $style = NULL, $lineSize = 70)
 {
