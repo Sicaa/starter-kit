@@ -2,10 +2,10 @@
 
 /**
 * Routing configuration file. Each route must be an instance of the Route
-* class.
+* class. If routing.yml is present, this file is not taken into account.
 */
 
-use Controller\Core\Route as Route;
+use Controller\Core\Route;
 
 $routes = array(
 	// new Route(string $name, string $url, string $ClassController, string $methodName[, bool $https, bool $authRequired , array $permissions]),

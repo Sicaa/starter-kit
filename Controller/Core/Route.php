@@ -25,7 +25,7 @@ class Route {
 	protected $authRequired    = false;
 	protected $permissions     = array();
 
-	public function __construct($pathName_, $path_, $controllerClass_, $action_, $httpsRequired_ = false, $authRequired_ = false, $permissions_ = array()) 
+	public function __construct($pathName_, $path_, $controllerClass_, $action_, $httpsRequired_ = false, $authRequired_ = false, array $permissions_ = array())
 	{
 		$this->pathName        = $pathName_;
 		$this->path            = $path_;

@@ -1,0 +1,18 @@
+# Yaml version of routing file
+# This file has priority against routing.php 
+# Info available here : yaml.org
+
+404:
+    url: 404
+    controller: Controller\Controller\IndexController
+    method: error404
+
+hello_world:
+    url:
+    controller: Controller\Controller\ExampleController
+    method: helloWorld
+
+hello_anyone:
+    url: hello/{anyone}
+    controller: Controller\Controller\ExampleController
+    method: helloAnyone
