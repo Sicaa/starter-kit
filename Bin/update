@@ -29,7 +29,7 @@ $zipHash = hash_file('sha512', $zipPath);
 
 write('Checking for updates...');
 
-if (file_exists(__DIR__.'/.lock') && file_get_contents(__DIR__.'/.lock') === $zipHash) {
+if (file_exists(__DIR__.'/update.lock') && file_get_contents(__DIR__.'/update.lock') === $zipHash) {
 	write('Your Starter-Kit is up to date :)', 'green');
 	unlink($zipPath);
 	exit;
@@ -124,7 +124,7 @@ while ($it->valid()) {
 }
 rmdir(__DIR__.'/temp');
 
-file_put_contents(__DIR__.'/.lock', $zipHash);
+file_put_contents(__DIR__.'/update.lock', $zipHash);
 
 echo PHP_EOL;
 write('Your Starter-Kit have been successfully updated :)', 'green');
