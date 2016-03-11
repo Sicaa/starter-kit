@@ -64,6 +64,7 @@ $filesToExclude = array(
 	'/Config/config.php',
 	'/Config/config.php.local',
 	'/Config/routing.php',
+	'/Config/routing.yml',
 );
 
 write('This files will not be replaced: '.PHP_EOL.'- '.implode(PHP_EOL.'- ', $filesToExclude));
