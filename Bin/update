@@ -65,6 +65,12 @@ $filesToExclude = array(
 	'/Config/config.php.local',
 	'/Config/routing.php',
 	'/Config/routing.yml',
+	'/Controller/Controller/ExampleController.php',
+	'/Views/default/base.html.twig',
+	'/Views/errors/403.html.twig',
+	'/Views/errors/404.html.twig',
+	'/Views/example/hello-world.html.twig',
+	'/Views/example/hello-anyone.html.twig',
 );
 
 write('This files will not be replaced: '.PHP_EOL.'- '.implode(PHP_EOL.'- ', $filesToExclude));
