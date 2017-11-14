@@ -6,7 +6,7 @@
 * choice.
 */
 
-function exceptionHandler(\Exception $e)
+function exceptionHandler(\Throwable $e)
 {
 	if (ERROR_NOTIFICATION_DISPLAY === true) {
 		$message = '<div style="text-align:left;padding:10px;border:1px solid #000;background-color:#FFB6B6;">';
